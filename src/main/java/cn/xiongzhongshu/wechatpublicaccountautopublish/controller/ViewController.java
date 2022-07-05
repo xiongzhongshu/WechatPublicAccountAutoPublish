@@ -4,7 +4,6 @@ import cn.xiongzhongshu.wechatpublicaccountautopublish.bean.PdfFile;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-
 import javafx.scene.control.*;
 
 import java.io.File;
@@ -52,7 +51,7 @@ public class ViewController {
     public void onIpAdderssButtonClick() {
         String adderss = getAdderss();
         if (adderss.isBlank() || adderss.isEmpty()) {
-            logsTextArea.appendText("您的网络好像出问题了，试一试能不能访问：https://ip.me\n");
+            logsTextArea.appendText("您的网络好像出问题了，试一试访问：https://ip.me\n");
         } else {
             ipaddress.setText(getAdderss());
             logsTextArea.appendText("你的公网ip地址：" + adderss + "，看一下IP白名单有没得这个IP，没得的话要加进去\n");
@@ -179,7 +178,7 @@ public class ViewController {
     }
 
     /**
-     * PDF发布
+     * 表格点击事件
      */
 //    @FXML
 //    public void onFileTableClick() {

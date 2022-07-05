@@ -1,7 +1,6 @@
 package cn.xiongzhongshu.wechatpublicaccountautopublish.tools;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
@@ -13,10 +12,15 @@ import java.util.ArrayList;
 import java.util.concurrent.*;
 
 public class PdfTools {
-
+    //逻辑处理器数量
     private static int processors = Runtime.getRuntime().availableProcessors();
 
-
+    /**
+     * PDF转图片
+     *
+     * @param pdfFilePath
+     * @return
+     */
     public static ArrayList<String> pdfToImages(String pdfFilePath) {
         ExecutorService executorService = Executors.newFixedThreadPool(processors);
         CompletionService<Boolean> completionService = new ExecutorCompletionService<Boolean>(executorService);
@@ -37,6 +41,7 @@ public class PdfTools {
             e.printStackTrace();
         }
         int numberOfPages = document.getNumberOfPages();
+//        多线程执行PDF转图片
         for (int pageCounter = 0; pageCounter < numberOfPages; pageCounter++) {
             String path = imagesPath + File.separator + (pageCounter) + ".png";
             PdfConvert pdfConvert = new PdfConvert(file, pageCounter, path);
@@ -48,6 +53,7 @@ public class PdfTools {
         } catch (IOException e) {
             e.printStackTrace();
         }
+//        等待线程执行结束
         for (int i = 0; i < numberOfPages; i++) {
             try {
                 completionService.take();
@@ -60,7 +66,9 @@ public class PdfTools {
     }
 }
 
-
+/**
+ * pdf转图片执行线程
+ */
 class PdfConvert implements Callable {
     private final System.Logger LOGGER = System.getLogger("PdfConvert");
     private int pageCounter = 0;

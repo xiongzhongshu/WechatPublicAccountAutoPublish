@@ -25,7 +25,7 @@ public class HtmlTemplateTools {
     }
 
     /**
-     * 用模板生成微信公众号页面
+     * 用模板生成微信公众号草稿
      *
      * @param arrayList
      * @param outPath

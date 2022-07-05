@@ -2,9 +2,15 @@ package cn.xiongzhongshu.wechatpublicaccountautopublish.bean;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * 界面上的文件表格
+ */
 public class PdfFile {
+    //文件名
     private SimpleStringProperty fileName;
+    //文件路径
     private SimpleStringProperty filePath;
+    //状态
     private SimpleStringProperty status;
 
     public String getFileName() {

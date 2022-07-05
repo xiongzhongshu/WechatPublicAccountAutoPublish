@@ -7,8 +7,11 @@ import java.util.ArrayList;
 public class FileTools {
 
 
-
-
+    /**
+     * 递归检索PDF文件
+     * @param dirPath
+     * @return
+     */
     public static ArrayList<File> findPdfFiles(String dirPath) {
         File directoryPath = new File(dirPath);
         ArrayList<File> pdfPathList = new ArrayList<>();

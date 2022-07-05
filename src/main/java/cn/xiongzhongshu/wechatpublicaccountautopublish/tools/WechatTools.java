@@ -19,6 +19,8 @@ import java.util.concurrent.*;
 import static cn.xiongzhongshu.wechatpublicaccountautopublish.tools.PdfTools.pdfToImages;
 
 public class WechatTools {
+
+    //逻辑处理器数量
     private static int processors = Runtime.getRuntime().availableProcessors();
 
     /**
@@ -97,12 +99,12 @@ public class WechatTools {
             if (imagesWithList.size() > 1) {
                 for (int i = 1; i < imagesWithList.size(); i++) {
                     File imageFile = new File(imagesWithList.get(i));
-
                     UploadImgae uploadImgae = new UploadImgae(i, imageFile, imageFile.getPath() + File.separator + imageFile.getName(), wxMpMaterialService);
                     completionService.submit(uploadImgae);
 
                 }
                 HashMap<Integer, String> imageMap = new HashMap<>();
+                //等待线程执行结果
                 for (int i = 1; i < imagesWithList.size(); i++) {
                     try {
                         Future<ImageIndex> take = completionService.take();
@@ -138,6 +140,9 @@ public class WechatTools {
 
 }
 
+/**
+ * 上传图片执行线程
+ */
 class UploadImgae implements Callable {
     private final System.Logger LOGGER = System.getLogger("UploadImgae");
 
@@ -157,23 +162,23 @@ class UploadImgae implements Callable {
     public Object call() throws Exception {
         String imageUrl = "";
         int i = 0;
-//            没有上传成功，最多重复3次
+        //没有上传成功，最多重复3次
         while (i < 3 && imageUrl.isEmpty()) {
             //图片小于1M上传图文消息内的图片，图片小于10M上传素材
             if (imageFile.length() < 1024 * 1024) {
                 WxMediaImgUploadResult wxMediaImgUploadResult = wxMpMaterialService.mediaImgUpload(imageFile);
                 imageUrl = wxMediaImgUploadResult.getUrl();
-                LOGGER.log(System.Logger.Level.INFO, imageFile.getName() + "上传图文消息成功：" + imageUrl);
+                LOGGER.log(System.Logger.Level.INFO, imageFile.getName() + "，上传图文消息成功：" + imageUrl);
             } else if (imageFile.length() < 10 * 1024 * 1024) {
                 //新增其他类型永久素材
                 WxMpMaterial material1 = new WxMpMaterial(imageFile.getPath() + File.separator + imageFile.getName(), imageFile, "", "");
                 WxMpMaterialUploadResult image1 = wxMpMaterialService.materialFileUpload("image", material1);
                 //首页图片地址
                 imageUrl = image1.getUrl();
-                LOGGER.log(System.Logger.Level.INFO, imageFile.getName() + "上传素材库成功：" + imageUrl);
+                LOGGER.log(System.Logger.Level.INFO, imageFile.getName() + "，上传素材库成功：" + imageUrl);
             } else {
                 imageUrl = "图片大于10M";
-                LOGGER.log(System.Logger.Level.ERROR, "图片大于10M");
+                LOGGER.log(System.Logger.Level.ERROR, imageFile.getPath() + "，图片大于10M");
             }
             i++;
         }
@@ -182,10 +187,13 @@ class UploadImgae implements Callable {
     }
 }
 
+/**
+ * 图片上传到微信后返回图片的页码和图片地址
+ */
 class ImageIndex {
-    //    页码
+    //    图片所在PDF的页码
     private int index;
-    //    地址
+    //    图片地址
     private String url;
 
     public ImageIndex(int index, String url) {
