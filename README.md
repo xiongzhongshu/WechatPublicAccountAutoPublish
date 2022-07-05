@@ -16,7 +16,7 @@
 
 ## 编译和运行
 
-依赖java 11和JAVAFX SDK 11.0.12
+依赖java 11、maven 3和JAVAFX SDK 11.0.12
 
 1. 拉取代码
 
